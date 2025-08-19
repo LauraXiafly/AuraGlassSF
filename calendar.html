@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCT'44 Calendar</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script-index.js" defer></script>
+
+  <link rel="stylesheet" href="nav.css">
+  <script src="nav.js" defer></script>
+
+</head>
+
+<body>
+
+  <div id="calendar-container"></div>
+
+ 
+  <div id="poster-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Aura-Con Poster">
+      <button class="modal-close" type="button" title="Close" data-close>×</button>
+      <img id="poster-img" src="Pic/poster.png" alt="Aura-Con Poster">
+    </div>
+  </div>
+
+  
+  <div id="note-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Calendar Note">
+      <button class="modal-close" type="button" title="Close" data-close>×</button>
+      <div id="note-body" style="padding:24px; font-size:1.05rem; line-height:1.6; color:#e8e8e8; max-width:70ch;"></div>
+    </div>
+  </div>
+
+</body>
+</html>

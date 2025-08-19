@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" >
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" >
+
+  <title>Story Slides</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="story.css">
+
+  <link rel="stylesheet" href="nav.css">
+  <script src="nav.js" defer></script>
+
+  <link rel="preload" as="audio" href="Sound/1.MP3">
+  <link rel="preload" as="audio" href="Sound/con.MP3">
+
+
+
+</head>
+
+<body>
+  <main class="stage" aria-live="polite">
+
+    <img id="bg" class="bg" src="" alt="Background">
+    
+   
+    <div class="vignette"></div>
+
+    <div id="fragments" class="fragments-layer" aria-live="polite"></div>
+
+
+    <section class="note" aria-label="Slide text">
+
+      <div class="controls">
+        <button id="prev" class="nav-btn" aria-label="Previous slide">◀ Previous</button>
+        <div class="dots" id="dots" aria-label="Slide indicators"></div>
+        <button id="next" class="nav-btn" aria-label="Next slide">Next ▶</button>
+        
+        <a id="goLive" class="go-live-btn"
+        
+          href="calendar.html" 
+          aria-label="Go to the live page"
+          aria-hidden="true">
+          Open Calendar▶
+        </a>
+
+
+      </div>
+      
+
+    </section>
+  </main>
+
+  <script src="story.js"></script>
+</body>
+</html>

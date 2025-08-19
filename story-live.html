@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Story — Aura-con Live</title>
+  <link rel="stylesheet" href="live.css">
+
+  <link rel="stylesheet" href="nav.css">
+  <script src="nav.js" defer></script>
+  <link rel="preload" as="audio" href="Sound/notif.MP3">
+
+
+</head>
+
+
+<body>
+
+  
+  <div class="ag-modal" id="ag-prelive">
+
+    <div class="ag-card" role="dialog" aria-modal="true" aria-labelledby="ag-preliveTitle">
+
+      <header class="ag-card-head">
+        <span class="ag-warn" aria-hidden="true"></span>
+        <strong id="ag-preliveTitle">Aura-con Live</strong>
+        <button class="ag-btn ag-close" id="ag-preliveClose" aria-label="Close">✕</button>
+      </header>
+
+     <div class="ag-card-content">
+      <p>
+        <strong>Live starts in <span id="ag-countdown">10</span>s.</strong>
+        Be ready to switch to your <em>brand avatar skin</em> for promotion.
+        Aura-Glass is looking forward to your collaboration.
+      </p>
+    </div>
+
+    <div class="ag-actions">
+      <button class="ag-btn" id="ag-preliveLater">Dismiss</button>
+      <button class="ag-btn ag-primary" id="ag-preliveChoose">Open Avatar Picker</button>
+    </div>
+  </div>
+</div>
+
+ 
+  <div id="ag-app" class="ag-app" data-skin="default">
+    
+
+    <div class="ag-topbar">
+
+      <div class="ag-brand">
+
+        <button class="ag-back" id="ag-back" title="Back to previous chapter">← Back</button>
+        <div class="ag-logo" aria-hidden="true"></div>
+        <h1 class="ag-title">AURA-CON LIVE</h1>
+      </div>
+      <div class="ag-live">
+        <span class="ag-pill"><span class="ag-dot" aria-hidden="true"></span> LIVE</span>
+        <span class="ag-pill">Viewers <span id="ag-viewers" class="ag-counter">100,000</span></span>
+      </div>
+    </div>
+
+    <div class="ag-main">
+
+     
+      <section class="ag-stream" aria-label="Live stream player">
+        <div class="ag-video" id="ag-video">
+          <div class="ag-livebadge"><span class="ag-pill"><span class="ag-dot" aria-hidden="true"></span> On Air · Aura-con</span></div>
+          <div class="ag-avatar-status">
+            <span class="ag-tag ag-active">Avatar: <strong id="ag-avatarName">Default</strong></span>
+            <span class="ag-tag ag-brandtag" title="Brand-owned premium">Premium</span>
+          </div>
+          <div class="ag-noise" aria-hidden="true"></div>
+
+          
+          <img id="ag-screen" class="ag-screen" src="Pic/3.png"  />
+
+          <button id="ag-endCTA" class="ag-endcta ag-btn ag-primary" aria-label="Proceed to ending" style="display:none;"> 
+            Proceed → 
+          </button>
+
+
+
+        </div>
+
+        <div class="ag-ops" id="ag-ops">
+          <button class="ag-btn ag-primary" id="ag-choose">Choose Avatar Skin</button>
+          <button class="ag-btn" id="ag-announce">Send System Announcement</button>
+        </div>
+      </section>
+
+      
+      <aside class="ag-chat" aria-label="Live chat">
+        <h3 class="ag-chat-title">Chat</h3>
+        <ul class="ag-log" id="ag-log" aria-live="polite" aria-relevant="additions"></ul>
+        <div class="ag-composer">
+          <input type="text" placeholder="Type to simulate chat… (press Enter)" id="ag-input"/>
+          <button class="ag-btn" id="ag-send">Send</button>
+        </div>
+      </aside>
+    </div>
+
+    
+    <div class="ag-drawer" id="ag-drawer">
+      <div class="ag-sheet" role="dialog" aria-modal="true" aria-labelledby="ag-avatarHeading">
+
+        <header class="ag-sheet-head">
+
+          <h2 id="ag-avatarHeading">Select an Avatar Skin</h2>
+          <button class="ag-btn" id="ag-closeDrawer">Close</button>
+        </header>
+        <div class="ag-grid">
+          <div class="ag-skin" data-id="newsreel">
+            <div class="ag-thumb">Newsreel</div>
+            <div class="ag-meta">Public Domain · Non-commercial</div>
+          </div>
+          <div class="ag-skin" data-id="bladerunner1982">
+            <div class="ag-ribbon">BRAND</div>
+            <div class="ag-thumb">Blade Runner (1982)</div>
+            <div class="ag-meta">Retro Film Icon · Brand-owned</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="ag-modal" id="ag-banModal">
+      <div class="ag-card" role="dialog" aria-modal="true" aria-labelledby="ag-banTitle">
+        <header class="ag-card-head">
+          <span class="ag-warn" aria-hidden="true"></span>
+          <strong id="ag-banTitle">Warning</strong>
+        </header>
+        <div class="ag-card-content" id="ag-banText"></div>
+
+        <div class="ag-actions">
+          <button class="ag-btn ag-switch" id="ag-switch">Switch to non-commercial skin</button>
+          <button class="ag-btn ag-pay" id="ag-pay">Pay surcharge ($49.99/hour)</button>
+          <button class="ag-btn" id="ag-dismiss">Dismiss</button>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="ag-toast" id="ag-toast"></div>
+  </div>
+
+  <script src="live.js"></script>
+</body>
+</html>

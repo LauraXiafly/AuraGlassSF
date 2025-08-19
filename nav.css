@@ -1,0 +1,47 @@
+:root{
+  --nav-bg: rgba(10,16,26,.55);
+  --nav-bd: rgba(102,252,241,.25);
+  --nav-txt: #dfe8ff;
+  --nav-acc: #66fcf1;
+}
+
+/* helped with copilot */
+.site-nav{
+  position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: inline-flex; gap: 6px; align-items: center;
+  padding: 8px 10px;
+  border: 1px solid var(--nav-bd);
+  border-radius: 999px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  font: 600 13px/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+
+.site-nav a{
+  display: inline-block; padding: 6px 10px; border-radius: 999px;
+  text-decoration: none; color: var(--nav-txt);
+  border: 1px solid transparent;
+}
+.site-nav a:hover{ border-color: var(--nav-bd); background: rgba(102,252,241,.10); }
+
+
+.site-nav a[aria-current="page"]{
+  background: rgba(102,252,241,.18);
+  color: var(--nav-acc);
+  border-color: rgba(102,252,241,.35);
+  box-shadow: 0 0 12px rgba(69,162,158,.25);
+}
+
+
+@media (max-width: 520px){
+  .site-nav{ left: 12px; right: 12px; transform: none; justify-content: center; flex-wrap: wrap; }
+}
+
+
+body.nav-push{ padding-top: 56px; }
+
+
+.site-nav--below-topbar{ top: 64px; }
+@media (max-width: 520px){ .site-nav--below-topbar{ top: 56px; } }
