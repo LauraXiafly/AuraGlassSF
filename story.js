@@ -327,40 +327,6 @@ document.addEventListener('visibilitychange', () => {
 });
 
 
-// ===== 2) 初始化播放器（不立刻大声播放）=====
-AUDIO.init();
-
-// ===== 3) 先“静音尝试自动播放”，提升放行率；失败就打印原因 =====
-(function tryMutedAutoplay() {
-  // 统一把所有音轨静音 + 音量 0，再尝试播放
-  for (const p of Object.values(AUDIO.players)) {
-    p.muted = true;
-    p.volume = 0.0;
-  }
-
-  const idx = (typeof window.currentIndex === 'number') ? window.currentIndex : 0;
-  const key = AUDIO.map[idx];
-  if (!key) {
-    console.warn('[audio] No track mapped for slide index', idx);
-    return;
-  }
-
-  const track = AUDIO.players[key];
-
-  track.play().then(() => {
-    console.log('[audio] muted autoplay started on', key);
-    // 成功后，解除静音并淡入音量（多数浏览器允许）
-    setTimeout(() => {
-      for (const p of Object.values(AUDIO.players)) p.muted = false;
-      AUDIO.fade(track, 0.0, 0.28, 350);
-      AUDIO.currentKey = key;
-    }, 100);
-  }).catch((err) => {
-    console.warn('[audio] autoplay blocked. Waiting for first gesture.', err);
-    // 被拦截：保留你 init() 里已经注册的 'pointerdown' / 'keydown' 兜底
-    // 用户在 story 页随便点/按一下，就会触发 kickOnce → syncToSlide → 播放
-  });
-})();
 
 // ===== 4)（可选）页面变为可见时再试一次，防止 bfcache / 资源迟到 =====
 document.addEventListener('visibilitychange', () => {
@@ -374,3 +340,27 @@ document.addEventListener('visibilitychange', () => {
 const audio = document.getElementById('bg-audio');
 const soundBtn = document.getElementById('sound-toggle');
 let audioTried = false;
+
+// ===== 在文件顶部 AUDIO 外面加一个标记 =====
+let AUTOPLAY_STARTED = false;
+
+// ===== tryMutedAutoplay 成功后设为 true =====
+track.play().then(() => {
+  console.log('[audio] muted autoplay started on', key);
+  setTimeout(() => {
+    for (const p of Object.values(AUDIO.players)) p.muted = false;
+    AUDIO.fade(track, 0.0, 0.28, 350);
+    AUDIO.currentKey = key;
+    AUTOPLAY_STARTED = true; // <—— 加这一行
+  }, 100);
+})
+
+// ===== kickOnce 里避免二次触发 =====
+const kickOnce = async () => {
+  this.started = true;
+  if (!AUTOPLAY_STARTED) {
+    this.syncToSlide(window.currentIndex ?? 0, true);
+  }
+  window.removeEventListener('pointerdown', kickOnce, true);
+  window.removeEventListener('keydown',  kickOnce, true);
+};
