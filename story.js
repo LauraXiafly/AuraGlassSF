@@ -230,36 +230,35 @@ function goTo(i) {
 document.getElementById('prev').addEventListener('click', prev);
 document.getElementById('next').addEventListener('click', next);
 
-// Keyboard support
+
 window.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') prev();
   if (e.key === 'ArrowRight') next();
 });
 
-// === Slide 音频控制器 ===
-// 映射：第0、1页 -> A；第2页 -> B；其它页静音
+
 const AUDIO = {
-  // 按你的页码需求改这里（0基）：0=第一页,1=第二页,2=第三页
+  
   map: { 0: 'a', 1: 'a', 2: 'b' },
 
   players: {
-    a: new Audio('Sound/1.mp3'),
-    b: new Audio('Sound/con.mp3')
+    a: new Audio('Sound/1.MP3'),
+    b: new Audio('Sound/con.MP3')
   },
-  currentKey: null,   // 目前正在播放的 key: 'a' | 'b' | null
+  currentKey: null,   
   started: false,
 
   init() {
     for (const p of Object.values(this.players)) {
       p.loop = true;
       p.preload = 'auto';
-      p.volume = 0.28; // 初始音量可调
+      p.volume = 0.28; 
     }
 
-    // 自动播放策略：先尝试，失败就等一次用户交互
+ 
     const kickOnce = async () => {
       this.started = true;
-      // 让当前页的音频与初始页同步（需要你在初始化时把 currentIndex 设好，见下方集成）
+      
       this.syncToSlide(window.currentIndex ?? 0, true);
       window.removeEventListener('pointerdown', kickOnce, true);
       window.removeEventListener('keydown', kickOnce, true);
