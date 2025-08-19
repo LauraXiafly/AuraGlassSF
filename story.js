@@ -118,7 +118,7 @@ function renderFragments(slide){
   if(!fragmentsLayer) return;
   fragmentsLayer.innerHTML = '';
 
-  // 每次渲染时先把按钮隐藏（防止从最后一页切回前面仍然显示）
+  
   if (goLiveEl) {
     goLiveEl.classList.remove('show');
     goLiveEl.setAttribute('aria-hidden', 'true');
@@ -230,35 +230,36 @@ function goTo(i) {
 document.getElementById('prev').addEventListener('click', prev);
 document.getElementById('next').addEventListener('click', next);
 
-
+// Keyboard support
 window.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') prev();
   if (e.key === 'ArrowRight') next();
 });
 
-
+// === Slide 音频控制器 ===
+// 映射：第0、1页 -> A；第2页 -> B；其它页静音
 const AUDIO = {
-  
+  // 按你的页码需求改这里（0基）：0=第一页,1=第二页,2=第三页
   map: { 0: 'a', 1: 'a', 2: 'b' },
 
   players: {
     a: new Audio('Sound/1.MP3'),
     b: new Audio('Sound/con.MP3')
   },
-  currentKey: null,   
+  currentKey: null,   // 目前正在播放的 key: 'a' | 'b' | null
   started: false,
 
   init() {
     for (const p of Object.values(this.players)) {
       p.loop = true;
       p.preload = 'auto';
-      p.volume = 0.28; 
+      p.volume = 0.28; // 初始音量可调
     }
 
- 
+    // 自动播放策略：先尝试，失败就等一次用户交互
     const kickOnce = async () => {
       this.started = true;
-      
+      // 让当前页的音频与初始页同步（需要你在初始化时把 currentIndex 设好，见下方集成）
       this.syncToSlide(window.currentIndex ?? 0, true);
       window.removeEventListener('pointerdown', kickOnce, true);
       window.removeEventListener('keydown', kickOnce, true);
@@ -325,8 +326,85 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') AUDIO.stopAll();
 });
 
-window.currentIndex = 0; 
+
+// ===== 2) 初始化播放器（不立刻大声播放）=====
 AUDIO.init();
 
-AUDIO.syncToSlide(window.currentIndex, true);
+// ===== 3) 先“静音尝试自动播放”，提升放行率；失败就打印原因 =====
+(function tryMutedAutoplay() {
+  // 统一把所有音轨静音 + 音量 0，再尝试播放
+  for (const p of Object.values(AUDIO.players)) {
+    p.muted = true;
+    p.volume = 0.0;
+  }
 
+  const idx = (typeof window.currentIndex === 'number') ? window.currentIndex : 0;
+  const key = AUDIO.map[idx];
+  if (!key) {
+    console.warn('[audio] No track mapped for slide index', idx);
+    return;
+  }
+
+  const track = AUDIO.players[key];
+
+  track.play().then(() => {
+    console.log('[audio] muted autoplay started on', key);
+    // 成功后，解除静音并淡入音量（多数浏览器允许）
+    setTimeout(() => {
+      for (const p of Object.values(AUDIO.players)) p.muted = false;
+      AUDIO.fade(track, 0.0, 0.28, 350);
+      AUDIO.currentKey = key;
+    }, 100);
+  }).catch((err) => {
+    console.warn('[audio] autoplay blocked. Waiting for first gesture.', err);
+    // 被拦截：保留你 init() 里已经注册的 'pointerdown' / 'keydown' 兜底
+    // 用户在 story 页随便点/按一下，就会触发 kickOnce → syncToSlide → 播放
+  });
+})();
+
+// ===== 4)（可选）页面变为可见时再试一次，防止 bfcache / 资源迟到 =====
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && !AUDIO.currentKey) {
+    const idx = (typeof window.currentIndex === 'number') ? window.currentIndex : 0;
+    AUDIO.syncToSlide(idx, true);
+  }
+}, { once: true });
+
+
+const audio = document.getElementById('bg-audio');
+const soundBtn = document.getElementById('sound-toggle');
+let audioTried = false;
+
+// 只要用户产生过一次手势，就尝试播放
+function tryPlayAudio(){
+  if (audioTried) return;
+  audioTried = true;
+  if (!audio) return;
+  audio.play().then(()=>{
+    soundBtn.textContent = '🔊 Sound: On';
+  }).catch(()=>{
+    // 仍被阻止：等用户再点一次按钮
+    soundBtn.textContent = '🔈 Sound: Off (tap to enable)';
+  });
+}
+
+// 把“第一次手势”挂在多处：点击、键盘、触摸
+['click','keydown','touchstart'].forEach(evt=>{
+  window.addEventListener(evt, tryPlayAudio, { once:true, passive:true });
+});
+
+// 手动开关
+soundBtn.addEventListener('click', async ()=>{
+  if (!audio) return;
+  if (audio.paused) {
+    try {
+      await audio.play();
+      soundBtn.textContent = '🔊 Sound: On';
+    } catch(e){
+      soundBtn.textContent = '🔈 Sound: Off (blocked)';
+    }
+  } else {
+    audio.pause();
+    soundBtn.textContent = '🔈 Sound: Off';
+  }
+});
