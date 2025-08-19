@@ -374,37 +374,3 @@ document.addEventListener('visibilitychange', () => {
 const audio = document.getElementById('bg-audio');
 const soundBtn = document.getElementById('sound-toggle');
 let audioTried = false;
-
-// 只要用户产生过一次手势，就尝试播放
-function tryPlayAudio(){
-  if (audioTried) return;
-  audioTried = true;
-  if (!audio) return;
-  audio.play().then(()=>{
-    soundBtn.textContent = '🔊 Sound: On';
-  }).catch(()=>{
-    // 仍被阻止：等用户再点一次按钮
-    soundBtn.textContent = '🔈 Sound: Off (tap to enable)';
-  });
-}
-
-// 把“第一次手势”挂在多处：点击、键盘、触摸
-['click','keydown','touchstart'].forEach(evt=>{
-  window.addEventListener(evt, tryPlayAudio, { once:true, passive:true });
-});
-
-// 手动开关
-soundBtn.addEventListener('click', async ()=>{
-  if (!audio) return;
-  if (audio.paused) {
-    try {
-      await audio.play();
-      soundBtn.textContent = '🔊 Sound: On';
-    } catch(e){
-      soundBtn.textContent = '🔈 Sound: Off (blocked)';
-    }
-  } else {
-    audio.pause();
-    soundBtn.textContent = '🔈 Sound: Off';
-  }
-});
